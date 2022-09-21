@@ -1,32 +1,7 @@
 var path = require('path');
-var app = require('http').createServer(resposta);
-// Inclusão da biblioteca socket
-var io = require('socket.io')(app);
+var app = require('http');
 var fs = require('fs');
 var Iconv = require('iconv').Iconv;
-// Previsão da conexão ao socket pelo cliente
-io.on("connection", function(socket){
-     socket.on("enviar mensagem", function(mensagem_enviada, callback){
-		mensagem_enviada = "[ " + pegarDataAtual() + " ]: " + mensagem_enviada;
-		console.log(mensagem_enviada);
-		io.sockets.emit("atualizar mensagens", mensagem_enviada);
-		callback();
-     });
-});
-// Obtém a data atual
-function pegarDataAtual(){
-	var dataAtual = new Date();
-	var dia = (dataAtual.getDate()<10 ? '0' : '') + dataAtual.getDate();
-	var mes = ((dataAtual.getMonth() + 1)<10 ? '0' : '') + (dataAtual.getMonth() + 1);
-	var ano = dataAtual.getFullYear();
-	var hora = (dataAtual.getHours()<10 ? '0' : '') + dataAtual.getHours();
-	var minuto = (dataAtual.getMinutes()<10 ? '0' : '') + dataAtual.getMinutes();
-	var segundo = (dataAtual.getSeconds()<10 ? '0' : '') + dataAtual.getSeconds();
-
-	var dataFormatada = dia + "/" + mes + "/" + ano + " " + hora + ":" + minuto + ":" + segundo;
-	return dataFormatada;
-}
-
 // Devolução de saída para o cliente com o erro
 function exitErr(err, res){
 	// Exibição pormenorizada do erro
@@ -40,12 +15,10 @@ function exitErr(err, res){
 	res.end();	
 	}
 
-app.listen(3000);	
-	
 console.log("Aplicação está em execução...");
 var iconv = new Iconv('UTF-8','ISO-8859-1');
 // Loop do server
-function resposta(req, res) {
+app.createServer(function (req, res) {
 	// Exibe a URL de requisilção
 	console.log('Request: '+req.url);
 	// Extrai de req.url apenas o nome da página ou arquivo, sem os parâmetros
@@ -89,4 +62,4 @@ function resposta(req, res) {
 		});
     }
 
-}           
+}).listen(3000);

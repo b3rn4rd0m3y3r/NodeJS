@@ -3,14 +3,38 @@
 <head>
      <title>Chat</title>
      <link rel="stylesheet" type="text/css" href="./css/w3c.css" />
-	 <link rel="stylesheet" type="text/css" href="./css/w3c_comp.css" />
+	<link rel="stylesheet" type="text/css" href="./css/w3c_comp.css" />
+	<script type="text/javascript" src="./js/BMyFrmwk.js"></script>
+	<script type="text/javascript" src="/socket.io/socket.io.js"></script>
+	<script type="text/javascript">
+			 var socket = io.connect();
+			const ob = new BMy();
+			 function manda(e){
+				  e.preventDefault();
+				  socket.emit("enviar mensagem", (ob.getById("texto_mensagem")).value, function(){
+					   (ob.getByQry("form#chat #texto_mensagem"))[0].value = "";
+				  });
+			 };
+			socket.on("atualizar mensagens", function(mensagem){
+				var mensagem_formatada = document.createElement("P");
+				var texto = document.createTextNode(mensagem);
+				mensagem_formatada.appendChild(texto);
+			
+				 (ob.getById("historico_mensagens")).append(mensagem_formatada);
+				});
+	</script>
+	 <style>
+	#historico_mensagens{
+		 height: 550px;
+		}
+	 </style>
 </head>
 <body>
      <h1 class="w3-container w3-blue">CHAT Meyer</h1>
-	 <div class="w3-container" id="historico_mensagens"></div>
-     <form class="w3-panel" id=’chat’>
-         <input type='text' id='texto_mensagem' name='texto_mensagem' />
-         <input  class="w3-button" type='submit' value='Enviar mensagem!' />
+	 <div class="w3-container w3-border" id="historico_mensagens"></div>
+     <form class="w3-panel" id="chat" onsubmit="manda(event);">
+         <label class="w3-label">Mensagem:</label><input type='text' id='texto_mensagem' name='texto_mensagem' />
+         <input  class="w3-button w3-round w3-blue-gray" type='submit' value='Enviar!' />
      </form>
 </body>
 </html>
