@@ -4,10 +4,39 @@ var app = require('http').createServer(resposta);
 var io = require('socket.io')(app);
 var fs = require('fs');
 var Iconv = require('iconv').Iconv;
+// Array de usuários da sala
+var usuarios = [];
 // Previsão da conexão ao socket pelo cliente
 io.on("connection", function(socket){
-     socket.on("enviar mensagem", function(mensagem_enviada, callback){
-		mensagem_enviada = "[ " + pegarDataAtual() + " ]: " + mensagem_enviada;
+	// Entrada do cliente
+	socket.on("entrar", function(apelido, callback){
+			console.log(callback);
+			console.log(apelido);
+			console.log("Id do Socket:"+socket.id);
+			console.log(io._path);
+			// Debugando informações de clientes
+			console.log("No. Clientes: "+io.eio.clientsCount);
+			//console.log(io.eio.clients);
+			var coll = io.eio.clients;
+			var i = 0;
+			for( item in coll ){
+				++i;
+				console.log("CLIENTE [" + i +"]"+coll[item].id);
+				}
+			console.log('---------------------');
+			// Checa se este apelido já está na lista de usuários
+			if(!(apelido in usuarios)){
+				socket.apelido = apelido;
+				usuarios[apelido] = socket;
+				callback(true);
+				} else {
+				callback(false);
+				}
+			});
+	// Envio de mensagem
+	socket.on("enviar mensagem", function(mensagem_enviada, callback){
+		console.log(callback);
+		mensagem_enviada = "[ " + pegarDataAtual() + " ]: ["  + socket.apelido + "] " + mensagem_enviada;
 		console.log(mensagem_enviada);
 		io.sockets.emit("atualizar mensagens", mensagem_enviada);
 		callback();
