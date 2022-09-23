@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head>
+     <title>Chat</title>
+     <link rel="stylesheet" type="text/css" href="./css/w3c.css" />
+	<link rel="stylesheet" type="text/css" href="./css/w3c_comp.css" />
+	<script type="text/javascript" src="./js/BMyFrmwk.js"></script>
+	<script type="text/javascript" src="/socket.io/socket.io.js"></script>
+	<script type="text/javascript">
+			var socket = io.connect();
+			const ob = new BMy();
+			// Controle do submit do form de login
+			function logar(e){
+				e.preventDefault();
+
+				socket.emit("entrar", (ob.getById("apelido")).value, function(valido){
+					if(valido){
+						(ob.getById("acesso_usuario")).style.display = "none";
+						(ob.getById("sala_chat")).style.display = "block";
+						// Coloca o apelido ao lado do título do chat
+						(ob.getById("usu")).innerText = (ob.getById("apelido")).value;
+						} else {
+						(ob.getById("acesso_usuario")).value = "";
+						alert("Nome já utilizado nesta sala");
+						}
+				 });
+			}
+			// Controle do submit do form de envio de mensagem
+			function manda(e){
+				  e.preventDefault();
+				  socket.emit("enviar mensagem", (ob.getById("texto_mensagem")).value, function(){
+					   (ob.getByQry("form#chat #texto_mensagem"))[0].value = "";
+				  });
+			 };
+			// Quando o server envia "atualizar mensagens", 
+			// o client executa este evento
+			socket.on("atualizar mensagens", function(mensagem){
+				// Operações no DOM desta página html
+				var mensagem_formatada = document.createElement("P");
+				var texto = document.createTextNode(mensagem);
+				mensagem_formatada.appendChild(texto);
+				 (ob.getById("historico_mensagens")).append(mensagem_formatada);
+				});
+			// LISTA DE USUÁRIOS
+			socket.on("atualizar usuarios", function(usuarios){
+
+				var elemSel = ob.getById("lista_usuarios"); 
+				elemSel.innerHTML = "";
+				var opcao = document.createElement("OPTION");
+				var texto = document.createTextNode("Todos");
+				opcao.appendChild(texto);
+				elemSel.appendChild(opcao);
+				var nodos = [];
+				for( item in usuarios){
+					nodos[item] = document.createElement("OPTION");
+					texto = document.createTextNode(usuarios[item]);
+					nodos[item].appendChild(texto);
+					elemSel.appendChild(nodos[item]);
+					}
+				});
+	</script>
+	 <style>
+		#historico_mensagens{
+			 height: 450px;
+			 width: 600px;
+			}
+		#lista_usuarios{
+			height: 450px;
+			}
+		/* Alterações para a entrada do usuário */
+			#sala_chat{
+				 display: none;
+			}
+			#acesso_usuario{
+				 height:30px;
+				 left:50%;
+				 margin-left:-160px;
+				 margin-top:-15px;
+				 position: fixed;
+				 top:50%;
+				 width:320px;
+			}
+			#acesso_usuario form{
+				 margin:0;
+			}		
+	 </style>
+</head>
+<body>
+     <h1 class="w3-container w3-amber">CHAT Meyer - <span id="usu"></span></h1>
+	<div id='acesso_usuario'>
+		 <form id="login"  onsubmit="logar(event);">
+			 <input type='text' placeholder='Insira seu apelido' name='apelido' id='apelido' />
+			 <input type='submit' value='Entrar' />
+		 </form>
+	</div>
+	<div class="w3-panel" id='sala_chat'>
+		<div class="w3-panel">
+			<div class="w3-border w3-cell" id="historico_mensagens"></div>
+			<div class="w3-panel w3-cell">
+				<select class="" multiple="multiple" id='lista_usuarios'>
+					<option value=''>Todos</option>
+				</select>
+			</div>
+		</div>
+		<form class="w3-panel" id="chat" onsubmit="manda(event);">
+			<label class="w3-label">Mensagem:</label><input type='text' id='texto_mensagem' name='texto_mensagem' />
+			<input  class="w3-button w3-round w3-blue-gray" type='submit' value='Enviar!' />
+		</form>
+	</div>	 
+</body>
+</html>

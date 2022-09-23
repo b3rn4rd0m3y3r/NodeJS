@@ -4,8 +4,6 @@ var app = require('http').createServer(resposta);
 var io = require('socket.io')(app);
 var fs = require('fs');
 var Iconv = require('iconv').Iconv;
-// Inclusão de biblioteca do usuário
-var tools = require('./tools');
 // Array de usuários da sala
 var usuarios = [];
 // Previsão da conexão ao socket pelo cliente
@@ -40,14 +38,13 @@ io.on("connection", function(socket){
 	// Envio de mensagem
 	socket.on("enviar mensagem", function(mensagem_enviada, callback){
 		console.log(callback);
-		mensagem_enviada = "[ " + tools.pegarDataAtual() + " ]: ["  + socket.apelido + "] " + mensagem_enviada;
+		mensagem_enviada = "[ " + pegarDataAtual() + " ]: ["  + socket.apelido + "] " + mensagem_enviada;
 		console.log(mensagem_enviada);
 		io.sockets.emit("atualizar mensagens", mensagem_enviada);
 		callback();
      });
 
 });
-/*
 // Obtém a data atual
 function pegarDataAtual(){
 	var dataAtual = new Date();
@@ -74,7 +71,7 @@ function exitErr(err, res){
 	res.write('<h2>A&Ccedil;&Atilde;O: ' + err.syscall + '</h2>');
 	res.end();	
 	}
-*/
+
 app.listen(3000);	
 	
 console.log("Aplicação está em execução...");
@@ -91,7 +88,7 @@ function resposta(req, res) {
     if(req.url.indexOf('.html') != -1){ //req.url é o pathname, checa se a extensão é '.html'
 		fs.readFile(__dirname + arr[0], function (err, data) {
 			if (err) { 
-				tools.exitErr(err, res)
+				exitErr(err, res)
 				} else {
 				res.writeHead(200, {'Content-Type': 'text/html'});
 				res.write(data);
@@ -103,7 +100,7 @@ function resposta(req, res) {
     if(req.url.indexOf('.js') != -1){ //req.url é o pathname, checa se a extensão é  '.js'
 		fs.readFile(__dirname + req.url, function (err, data) {
         if (err) { 
-			tools.exitErr(err, res)
+			exitErr(err, res)
 			} else {
 				res.writeHead(200, {'Content-Type': 'text/javascript'});
 				res.write(data);
@@ -115,7 +112,7 @@ function resposta(req, res) {
 	if(req.url.indexOf('.css') != -1){ //req.url é o pathname, checa se a extensão é  '.css'
 		fs.readFile(__dirname + req.url, function (err, data) {
         if (err) { 
-			tools.exitErr(err, res)
+			exitErr(err, res)
 			} else {
 				res.writeHead(200, {'Content-Type': 'text/css'});
 				res.write(data);
