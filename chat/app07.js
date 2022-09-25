@@ -3,7 +3,7 @@ var app = require('http').createServer(resposta);
 // Inclusão da biblioteca socket
 var io = require('socket.io')(app);
 var fs = require('fs');
-var Iconv = require('iconv').Iconv;
+var Iconv = require('iconv-lite');
 // Array de usuários da sala
 var usuarios = [];
 // Previsão da conexão ao socket pelo cliente
@@ -72,7 +72,7 @@ function exitErr(err, res){
 app.listen(3000);	
 	
 console.log("Aplicação está em execução...");
-var iconv = new Iconv('UTF-8','ISO-8859-1');
+//var iconv = new Iconv('UTF-8','ISO-8859-1');
 // Loop do server
 function resposta(req, res) {
 	// Exibe a URL de requisilção
