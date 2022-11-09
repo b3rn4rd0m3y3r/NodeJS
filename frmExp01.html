@@ -1,5 +1,34 @@
-<form method="post" action="http://localhost:3008/form"  enctype="application/x-www-form-urlencoded">
-	<input type="text" name="cpo1" value="Campo 01">
-	<input type="text" name="cpo2" value="Campo 02">
-	<input type=submit>
-</form>
+<head>
+	<link rel="stylesheet" href="./w3c.css">
+	<link rel="stylesheet" href="./w3c_comp.css">
+</head>
+<body>
+	<center>
+		<h1 class="w3-container w3-amber">Envio de form por JSON em ExpressJS</h1>
+		<form name="frm1" method="post" action="http://localhost:3008/form"  enctype="application/x-www-form-urlencoded">
+			<table>
+				<tr>
+					<td><label class="w3-text-grey w3-size16">Campo 1</label></td>
+					<td>
+						<input class="w3-input" type="text" id="cpo1" name="t_cpo1" value="Campo 01">
+					</td>
+				</tr>
+				<tr>
+					<td><label class="w3-text-grey w3-size16">Campo 2</label></td>
+					<td>		
+						<input class="w3-input" type="text"  id="cpo2" name="t_cpo2" value="Campo 02">
+					</td>
+				</tr>
+				<tr>
+					<td><label class="w3-text-grey w3-size16">Data 1</label></td>
+					<td>		
+						<input class="w3-input" type="date"  id="cpo3" name="d_cpo3" value="">
+					</td>
+				</tr>
+				<tr>
+					<td colspan=2 align=center><input type=submit></td>
+				</tr>
+			</table>
+		</form>
+	</center>
+</body>
