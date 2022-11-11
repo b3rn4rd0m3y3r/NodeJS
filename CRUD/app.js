@@ -12,8 +12,14 @@ var port = 3000;
 		http://localhost:3000/list
 */
 
-app.use('/', require('./routes/index'));
+app.use('/', require('./routes/about'));
 app.use('/about', require('./routes/about'));
+app.use('/edit/', require('./routes/edit'));
+app.use('/edit/:id', require('./routes/edit'));
+app.use('/add', require('./routes/add'));
+app.use('/dele', require('./routes/dele'));
+app.use('/dele/:id', require('./routes/dele'));
+app.use('/list', require('./routes/list'));
 
 app.listen(port, function(){ 
     console.log(`Listening on port: ${port}!`) 
